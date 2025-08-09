@@ -46,7 +46,7 @@ class CryptocurrencyHistoryViewSet(mixins.ListModelMixin, viewsets.GenericViewSe
     serializer_class = CryptocurrencyHistorySerializer
     filter_backends = [DjangoFilterBackend]
     lookup_field = 'currency_id'
-    filterset_fields = ['history_date', 'history_type']
+    filterset_class = CryptocurrencyFilter
 
     def get_queryset(self):
         currency_id = self.kwargs.get('currency_id')
