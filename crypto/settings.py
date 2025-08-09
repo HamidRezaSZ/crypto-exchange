@@ -10,7 +10,13 @@ For the full list of settings and their values, see
 https://docs.djangoproject.com/en/5.2/ref/settings/
 """
 
+import os
 from pathlib import Path
+
+from celery.schedules import crontab
+from dotenv import load_dotenv
+
+load_dotenv()
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -20,10 +26,10 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 # See https://docs.djangoproject.com/en/5.2/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = 'django-insecure-_%z9k4&3%on=7ur52*a23db7=k&nd)l5%34&2jhr)m+x+3*#dz'
+SECRET_KEY = os.getenv('SECRET_KEY')
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+DEBUG = os.getenv('DEBUG', 'False')
 
 ALLOWED_HOSTS = []
 
@@ -40,9 +46,11 @@ INSTALLED_APPS = [
     # Third-party apps
     'rest_framework',
     'drf_yasg',
-    "axes",
-    "django_filters",
+    'axes',
+    'django_filters',
     'simple_history',
+    'celery',
+    'django_celery_beat',
     # Local apps
     'currencies',
 ]
@@ -149,3 +157,19 @@ AUTHENTICATION_BACKENDS = [
     # Django ModelBackend is the default authentication backend.
     "django.contrib.auth.backends.ModelBackend",
 ]
+
+CRYPTO_CURRENCY_API_KEY = os.getenv('CRYPTO_CURRENCY_API_KEY')
+
+# Celery Configuration
+CELERY_BROKER_URL = os.getenv('REDIS_URL')
+CELERY_RESULT_BACKEND = os.getenv('REDIS_URL')
+CELERY_ACCEPT_CONTENT = ['json']
+CELERY_TASK_SERIALIZER = 'json'
+CELERY_RESULT_SERIALIZER = 'json'
+CELERY_TIMEZONE = TIME_ZONE
+CELERY_BEAT_SCHEDULE = {
+    'update_every_minute_cryptocurrencies': {
+        'task': 'currencies.tasks.update_cryptocurrencies_from_api',
+        'schedule': crontab(minute='*'),  # Every minute
+    },
+}

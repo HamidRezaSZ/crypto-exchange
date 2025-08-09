@@ -1,29 +1,14 @@
 from django.shortcuts import get_object_or_404
-from django_filters.rest_framework import (
-    DateTimeFilter,
-    DjangoFilterBackend,
-    FilterSet,
-    NumberFilter,
-)
+from django_filters.rest_framework import DjangoFilterBackend
 from rest_framework import filters, mixins, viewsets
 
+from .filters import CryptocurrencyFilter, CryptocurrencyHistoryFilter
 from .models import Cryptocurrency
 from .serializers import (
     CryptocurrencyDetailSerializer,
     CryptocurrencyHistorySerializer,
     CryptocurrencyListSerializer,
 )
-
-
-class CryptocurrencyFilter(FilterSet):
-    rate__gt = NumberFilter(field_name='rate', lookup_expr='gt')
-    rate__lt = NumberFilter(field_name='rate', lookup_expr='lt')
-    last_updated__gt = DateTimeFilter(field_name='last_updated', lookup_expr='gt')
-    last_updated__lt = DateTimeFilter(field_name='last_updated', lookup_expr='lt')
-
-    class Meta:
-        model = Cryptocurrency
-        fields = ['rate__gt', 'rate__lt', 'last_updated__gt', 'last_updated__lt']
 
 
 class CryptocurrencyViewSet(viewsets.ReadOnlyModelViewSet):
@@ -46,7 +31,7 @@ class CryptocurrencyHistoryViewSet(mixins.ListModelMixin, viewsets.GenericViewSe
     serializer_class = CryptocurrencyHistorySerializer
     filter_backends = [DjangoFilterBackend]
     lookup_field = 'currency_id'
-    filterset_class = CryptocurrencyFilter
+    filterset_class = CryptocurrencyHistoryFilter
 
     def get_queryset(self):
         currency_id = self.kwargs.get('currency_id')

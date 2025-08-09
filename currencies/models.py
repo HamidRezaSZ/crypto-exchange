@@ -14,4 +14,4 @@ class Cryptocurrency(models.Model):
         return f"{self.name} ({self.symbol})"
 
     class Meta:
-        ordering = ['-name']
+        ordering = ['name']
