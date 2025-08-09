@@ -18,11 +18,10 @@ RUN apt-get update && apt-get install -y \
 COPY requirements.txt /app/
 RUN pip install --upgrade pip && pip install -r requirements.txt
 
+# Copy environment variables
+RUN python manage.py collectstatic --noinput
+
 # Copy project
 COPY . /app/
 
-# Collect static files (if needed)
-RUN python manage.py collectstatic --noinput
-
-# Run migrations
-RUN python manage.py migrate
+EXPOSE 8000
