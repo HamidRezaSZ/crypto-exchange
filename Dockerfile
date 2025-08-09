@@ -18,9 +18,6 @@ RUN apt-get update && apt-get install -y \
 COPY requirements.txt /app/
 RUN pip install --upgrade pip && pip install -r requirements.txt
 
-# Copy environment variables
-RUN python manage.py collectstatic --noinput
-
 # Copy project
 COPY . /app/
 
