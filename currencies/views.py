@@ -1,13 +1,18 @@
+from django.shortcuts import get_object_or_404
 from django_filters.rest_framework import (
     DateTimeFilter,
     DjangoFilterBackend,
     FilterSet,
     NumberFilter,
 )
-from rest_framework import filters, viewsets
+from rest_framework import filters, mixins, viewsets
 
 from .models import Cryptocurrency
-from .serializers import CryptocurrencyDetailSerializer, CryptocurrencyListSerializer
+from .serializers import (
+    CryptocurrencyDetailSerializer,
+    CryptocurrencyHistorySerializer,
+    CryptocurrencyListSerializer,
+)
 
 
 class CryptocurrencyFilter(FilterSet):
@@ -35,3 +40,14 @@ class CryptocurrencyViewSet(viewsets.ReadOnlyModelViewSet):
         if self.action == 'list':
             return CryptocurrencyListSerializer
         return CryptocurrencyDetailSerializer
+
+
+class CryptocurrencyHistoryViewSet(mixins.ListModelMixin, viewsets.GenericViewSet):
+    serializer_class = CryptocurrencyHistorySerializer
+    filter_backends = [DjangoFilterBackend]
+    lookup_field = 'currency_id'
+    filterset_fields = ['history_date', 'history_type']
+
+    def get_queryset(self):
+        currency_id = self.kwargs.get('currency_id')
+        return get_object_or_404(Cryptocurrency, id=currency_id).history.all()

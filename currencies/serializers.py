@@ -13,3 +13,9 @@ class CryptocurrencyDetailSerializer(serializers.ModelSerializer):
     class Meta:
         model = Cryptocurrency
         fields = ['id', 'symbol', 'name', 'rate', 'last_updated']
+
+
+class CryptocurrencyHistorySerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Cryptocurrency
+        fields = ['rate', 'last_updated']

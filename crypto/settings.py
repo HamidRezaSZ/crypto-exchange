@@ -42,6 +42,7 @@ INSTALLED_APPS = [
     'drf_yasg',
     "axes",
     "django_filters",
+    'simple_history',
     # Local apps
     'currencies',
 ]
@@ -67,6 +68,7 @@ MIDDLEWARE = [
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
     "simple_history.middleware.HistoryRequestMiddleware",
     "axes.middleware.AxesMiddleware",
+    'simple_history.middleware.HistoryRequestMiddleware',
 ]
 
 ROOT_URLCONF = 'crypto.urls'
