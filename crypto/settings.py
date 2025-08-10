@@ -176,3 +176,11 @@ CELERY_BEAT_SCHEDULE = {
         'schedule': crontab(minute='*'),  # Every minute
     },
 }
+
+# Django Cache Configuration (Redis)
+CACHES = {
+    "default": {
+        "BACKEND": "django.core.cache.backends.redis.RedisCache",
+        "LOCATION": os.getenv("REDIS_URL"),
+    }
+}
